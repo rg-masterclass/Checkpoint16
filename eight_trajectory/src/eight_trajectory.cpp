@@ -23,7 +23,7 @@ public:
     trajectory = {
         {0.0, 1.0, -1.0},         {0.0, 1.0, 1.0},           {0.0, 1.0, 1.0},
         {1.570796326, 1.0, -1.0}, {-3.14159265, -1.0, -1.0}, {0.0, -1.0, 1.0},
-        {0.0, -1.0, 1.0},         {0.0, -1.0, -1.0},
+        {0.0, -1.0, 1.0},         {1.570796326, -1.0, -1.0},
     };
 
     odom_subscription = this->create_subscription<nav_msgs::msg::Odometry>(
@@ -55,9 +55,9 @@ private:
 
   void timerCallback() {
 
-    double dphi = trajectory[trajectoryCounter][0] / 6;
-    double dx = trajectory[trajectoryCounter][1] / 6;
-    double dy = trajectory[trajectoryCounter][2] / 6;
+    double dphi = trajectory[trajectoryCounter][0] / 5;
+    double dx = trajectory[trajectoryCounter][1] / 5;
+    double dy = trajectory[trajectoryCounter][2] / 5;
 
     auto twist = velocity2twist(dphi, dx, dy);
     auto wheels = twist2wheels(twist[0], twist[1], twist[2]);
@@ -69,7 +69,7 @@ private:
     auto seconds = std::chrono::duration_cast<std::chrono::seconds>(
         std::chrono::high_resolution_clock::now() - start);
 
-    if (seconds.count() > 10) {
+    if (seconds.count() > 8) {
 
       wheel_speed_msg->data = {0, 0, 0, 0};
       publisher->publish(*wheel_speed_msg);
